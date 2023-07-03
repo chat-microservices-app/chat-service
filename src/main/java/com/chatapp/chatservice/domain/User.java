@@ -2,54 +2,55 @@ package com.chatapp.chatservice.domain;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
-@Setter
 @Getter
+@Setter
 @ToString
-@EqualsAndHashCode
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
-public class User implements UserDetails {
+@Entity
+@Table(name = "user_read_only")
+public class User {
+
+
+    // Do not generate the id, expect the user management service to provide it
+    @Id
+    @Column(name = "user_id", columnDefinition = "uuid")
+    private UUID userId;
+
 
     @JsonProperty("username")
     private String username;
 
+    @JsonProperty("firstName")
+    @Column(name = "first_name")
+    private String firstName;
 
-    @JsonProperty("password")
-    private String password;
-
-    @JsonProperty("authorities")
-    private Set<GrantedAuthority> authorities;
-
-    @Builder.Default
-    @JsonProperty("accountNonExpired")
-    private boolean accountNonExpired = true;
-
-    @Builder.Default
-    @JsonProperty("accountNonLocked")
-    private boolean accountNonLocked = true;
-
-    @Builder.Default
-    @JsonProperty("credentialsNonExpired")
-    private boolean credentialsNonExpired = true;
-
-    @Builder.Default
-    @JsonProperty("enabled")
-    private boolean enabled = true;
+    @JsonProperty("lastName")
+    @Column(name = "last_name")
+    private String lastName;
 
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return this.authorities;
-    }
+    @Column(name = "picture_url")
+    private String pictureUrl;
 
+    private String role;
+
+    @OneToMany(mappedBy = "createdBy", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
+    private Set<Room> rooms = new HashSet<>();
+
+    @OneToMany(mappedBy = "createdBy", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
+    private Set<Message> messages = new HashSet<>();
 
 
 }
+
