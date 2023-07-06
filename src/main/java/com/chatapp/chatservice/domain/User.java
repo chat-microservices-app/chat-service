@@ -37,19 +37,18 @@ public class User {
     @Column(name = "last_name")
     private String lastName;
 
-
     @Column(name = "picture_url")
     private String pictureUrl;
-
-    private String role;
-
-    @OneToMany(mappedBy = "createdBy", cascade = CascadeType.ALL, orphanRemoval = true)
-    @ToString.Exclude
-    private Set<Room> rooms = new HashSet<>();
 
     @OneToMany(mappedBy = "createdBy", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
     private Set<Message> messages = new HashSet<>();
+
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
+    private Set<Member> usersInRooms = new HashSet<>();
+
 
 
 }

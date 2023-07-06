@@ -18,11 +18,11 @@ CREATE TABLE IF NOT EXISTS room (
 );
 
 -- store the messages submitted in a room
-CREATE TABLE IF NOT EXISTS message (
+CREATE TABLE IF NOT EXISTS messageForm (
     message_id UUID NOT NULL PRIMARY KEY DEFAULT uuid_generate_v1(),
     user_id UUID NOT NULL,
     room_id UUID NOT NULL,
-    message VARCHAR NOT NULL,
+    messageForm VARCHAR NOT NULL,
     created_at TIMESTAMPTZ NOT NULL,
     updated_at TIMESTAMPTZ NULL,
     FOREIGN KEY (user_id) REFERENCES user_read_only(user_id),

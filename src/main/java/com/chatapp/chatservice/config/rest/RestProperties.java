@@ -8,6 +8,19 @@ public final class RestProperties {
 
     public static class CHATS {
         public static final String ROOT = "/chats";
+
+        public static class ROOM {
+            public static final String ROOT = "/rooms";
+
+            public static final String JOIN = "/join";
+
+        }
+
+        public static class MESSAGE {
+            public static final String ROOT = "/messages";
+        }
+
+
     }
 
 

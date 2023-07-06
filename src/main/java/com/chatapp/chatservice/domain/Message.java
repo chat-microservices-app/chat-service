@@ -2,6 +2,8 @@ package com.chatapp.chatservice.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.OffsetDateTime;
 
@@ -21,9 +23,11 @@ public class Message {
 
 
     @Column(name = "updated_at", columnDefinition = "timestamp")
+    @UpdateTimestamp
     private OffsetDateTime updatedAt;
 
-    @Column(name = "created_at", columnDefinition = "timestamp")
+    @Column(name = "created_at", columnDefinition = "timestamp", updatable = false)
+    @CreationTimestamp
     private OffsetDateTime createdAt;
 
     @Column(name = "message", columnDefinition = "nvarchar")

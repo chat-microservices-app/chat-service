@@ -22,9 +22,6 @@ public class UserDTO {
     @JsonProperty("pictureUrl")
     String pictureUrl;
 
-    @JsonProperty("role")
-    String role;
-
     @JsonProperty("username")
     String username;
 

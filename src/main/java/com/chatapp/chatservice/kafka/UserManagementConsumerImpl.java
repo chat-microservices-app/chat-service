@@ -15,7 +15,8 @@ public class UserManagementConsumerImpl implements UserManagementConsumer {
 
     private final UserService userService;
 
-    @KafkaListener(topics = "${spring.kafka.topic.user-updates}", groupId = "${spring.kafka.consumer.group-id}")
+    @KafkaListener(topics = "${spring.kafka.topic.user-updates}",
+            groupId = "${spring.kafka.consumer.group-id}")
     @Override
     public void consume(UserDTO userDTO) {
         log.info("Consumed message: {}", userDTO);

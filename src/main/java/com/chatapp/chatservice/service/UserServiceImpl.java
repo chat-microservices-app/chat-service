@@ -31,6 +31,5 @@ public class UserServiceImpl implements UserService {
         user.setLastName(temp.getLastName());
         user.setUsername(temp.getUsername());
         user.setPictureUrl(temp.getPictureUrl());
-        user.setRole(temp.getRole());
     }
 }

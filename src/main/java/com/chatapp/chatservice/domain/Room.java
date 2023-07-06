@@ -32,10 +32,11 @@ public class Room {
     @Column(name = "created_at", columnDefinition = "timestamp")
     private OffsetDateTime createdAt;
 
-    @ManyToOne
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Fetch(FetchMode.JOIN)
-    @JoinColumn(name = "user_id")
-    private User createdBy;
+    private Set<Member> members = new HashSet<>();
+
+
 
     @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Fetch(FetchMode.JOIN)
