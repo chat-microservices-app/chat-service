@@ -1,18 +1,29 @@
 package com.chatapp.chatservice.web.dto;
 
-import jakarta.validation.constraints.NotNull;
 
+import jakarta.validation.constraints.NotNull;
+import org.springframework.beans.factory.annotation.Value;
+
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
+
 public record MessageForm(
+
+        UUID messageId,
 
         @NotNull
         String message,
 
-        @NotNull
+        @NotNull @Value("#{target.createdBy.userId}")
         UUID userId,
 
-        @NotNull
-        UUID roomId
+        @NotNull @Value("#{target.room.roomId}")
+        UUID roomId,
+
+        OffsetDateTime createdAt,
+
+        OffsetDateTime updatedAt
 ) {
+
 }

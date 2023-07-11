@@ -24,6 +24,5 @@ public class ChatMessagingProducerImpl implements ChatMessagingProducer {
                 .setHeader(KafkaHeaders.TOPIC, topic.name())
                 .build();
         kafkaTemplate.send(message);
-
     }
 }

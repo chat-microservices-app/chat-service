@@ -19,7 +19,6 @@ import java.util.UUID;
 @Table(name = "user_read_only")
 public class User {
 
-
     // Do not generate the id, expect the user management service to provide it
     @Id
     @Column(name = "user_id", columnDefinition = "uuid")

@@ -55,6 +55,10 @@ public class WebSecurityConfig {
                         arm ->
                                 arm.requestMatchers(HttpMethod.OPTIONS).permitAll()
                                         .requestMatchers(allowedGetEndpoints()).permitAll()
+                                        .requestMatchers("/api/v1/chats/ws-chatapp/**").permitAll()
+                                        .requestMatchers(
+                                                AntPathRequestMatcher.antMatcher("/api/v1/chats/ws-chatapp/**"))
+                                        .permitAll()
                                         .anyRequest().authenticated()
 
                 )
@@ -85,6 +89,7 @@ public class WebSecurityConfig {
                 "/api-docs" + ALLOW_ALL_ENDPOINTS,
                 "/error" + ALLOW_ALL_ENDPOINTS,
                 "/error",
+                "/api/v1/chat/ws-chatapp" + ALLOW_ALL_ENDPOINTS,
                 "/h2-console" + ALLOW_ALL_ENDPOINTS
         };
     }

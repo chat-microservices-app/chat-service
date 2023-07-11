@@ -1,9 +1,13 @@
 package com.chatapp.chatservice.web;
 
+import com.chatapp.chatservice.annotation.CreateMessagePerm;
 import com.chatapp.chatservice.config.rest.RestProperties;
 import com.chatapp.chatservice.kafka.ChatMessagingProducer;
+import com.chatapp.chatservice.service.MessageService;
 import com.chatapp.chatservice.web.dto.MessageForm;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -20,40 +24,44 @@ import java.util.UUID;
         "/{roomId}" +
         RestProperties.CHATS.MESSAGE.ROOT
 )
-@MessageMapping(
-        RestProperties.ROOT + "/v1" +
-                RestProperties.CHATS.ROOM.ROOT +
-                "/{roomId}" +
-                RestProperties.CHATS.MESSAGE.ROOT
-)
 @RestController
 @RequiredArgsConstructor
 public class MessageController {
 
     private final ChatMessagingProducer chatMessagingProducer;
+    private final MessageService messageService;
 
     @GetMapping(produces = "application/json")
-    public ResponseEntity<?> getMessagesForRoom(@PathVariable UUID roomId) {
-        return ResponseEntity.ok().build();
+    public ResponseEntity<?> getMessagesForRoom(@PathVariable UUID roomId,
+                                                @RequestParam(name = "page", defaultValue = "0") int page,
+                                                @RequestParam(name = "size", defaultValue = "10") int size,
+                                                @RequestParam(name = "sort", defaultValue = "createdAt") String sort) {
+        return ResponseEntity.ok(
+                messageService
+                        .getMessagesByRoomId(roomId,
+                                PageRequest.of(page, size,
+                                        Sort.by(sort)
+                                                .ascending())
+                        )
+        );
+
     }
 
     // get messages by a user for a room
-
-    @GetMapping(path = "{userId}", produces = "application/json")
+    @GetMapping(path = "/{userId}", produces = "application/json")
     public ResponseEntity<?> getMessagesForRoomByUser(@PathVariable UUID roomId, @PathVariable UUID userId) {
         return ResponseEntity.ok().build();
     }
 
-    @MessageMapping("/send")
-    @SendTo("/topic" + RestProperties.ROOT + "/v1" +
-            RestProperties.CHATS.ROOT +
-            RestProperties.CHATS.ROOM.ROOT +
-            "/{roomId}" +
-            RestProperties.CHATS.MESSAGE.ROOT)
+
+    @MessageMapping("/send/{roomId}")
+    @SendTo("/channel" + RestProperties.CHATS.ROOM.ROOT +
+            "/{roomId}" + RestProperties.CHATS.MESSAGE.ROOT)
     public MessageForm broadcastMessage(@DestinationVariable UUID roomId, @Validated @Payload MessageForm messageForm) {
         return messageForm;
     }
 
+    @CreateMessagePerm
     @PostMapping(produces = "application/json", consumes = "application/json")
     public void createMessage(@PathVariable UUID roomId, @Validated @RequestBody MessageForm messageForm) {
         chatMessagingProducer.sendMessage(messageForm);
