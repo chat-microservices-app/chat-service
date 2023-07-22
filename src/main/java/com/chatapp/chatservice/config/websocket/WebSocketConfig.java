@@ -33,7 +33,7 @@ import java.util.NoSuchElementException;
 @Configuration
 @Log4j2
 @RequiredArgsConstructor
-@Order(Ordered.HIGHEST_PRECEDENCE + 99)
+@Order(Ordered.HIGHEST_PRECEDENCE + 99) // ensure that this config is loaded before the security config to intercept the requests
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 

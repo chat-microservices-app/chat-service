@@ -4,6 +4,7 @@ import com.chatapp.chatservice.domain.Message;
 import com.chatapp.chatservice.repository.MessageRepository;
 import com.chatapp.chatservice.repository.RoomRepository;
 import com.chatapp.chatservice.repository.UserRepository;
+import com.chatapp.chatservice.web.dto.MessageDTO;
 import com.chatapp.chatservice.web.dto.MessageForm;
 import com.chatapp.chatservice.web.mapper.MessageMapper;
 import com.chatapp.chatservice.web.paging.ObjectPagedList;
@@ -30,20 +31,20 @@ public class MessageServiceImpl implements MessageService {
     private final MessageMapper messageMapper;
 
     @Override
-    public MessageForm saveMessage(MessageForm messageForm) {
+    public MessageDTO saveMessage(MessageForm messageForm) {
         Message newMessage = Message
                 .builder()
                 .message(messageForm.message())
                 .room(roomRepository.getReferenceById(messageForm.roomId()))
                 .createdBy(userRepository.getReferenceById(messageForm.userId()))
                 .build();
-        return messageMapper.toMessageForm(messageRepository.saveAndFlush(newMessage));
+        return messageMapper.toMessageDTO(messageRepository.saveAndFlush(newMessage));
     }
 
     @Override
-    public ObjectPagedList<MessageForm> getMessagesByRoomId(UUID roomId, PageRequest pageRequest) {
+    public ObjectPagedList<MessageDTO> getMessagesByRoomId(UUID roomId, PageRequest pageRequest) {
         Page<Message> messagePage = messageRepository.findByRoom_RoomId(roomId, pageRequest, Message.class);
-        List<MessageForm>  messageFormList = messageMapper.toMessageFormList(messagePage.getContent());
+        List<MessageDTO>  messageFormList = messageMapper.toMessageDTOList(messagePage.getContent());
         return new ObjectPagedList<>(
                 messageFormList,
                 messagePage.getPageable(),

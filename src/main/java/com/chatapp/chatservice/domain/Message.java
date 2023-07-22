@@ -3,9 +3,10 @@ package com.chatapp.chatservice.domain;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SourceType;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.time.OffsetDateTime;
+import java.util.Date;
 import java.util.UUID;
 
 @Getter
@@ -24,14 +25,15 @@ public class Message {
 
 
     @Column(name = "updated_at", columnDefinition = "timestamp")
-    @UpdateTimestamp  @Temporal(TemporalType.TIMESTAMP)
-    private OffsetDateTime updatedAt;
+    @UpdateTimestamp @Temporal(TemporalType.TIMESTAMP)
+    private Date updatedAt;
 
-    @Column(name = "created_at", columnDefinition = "timestamp", updatable = false)
+
+    @Column(name = "created_at", columnDefinition = "timestamp", updatable = false, nullable = false)
     @CreationTimestamp @Temporal(TemporalType.TIMESTAMP)
-    private OffsetDateTime createdAt;
+    private Date createdAt;
 
-    @Column(name = "message", columnDefinition = "nvarchar")
+    @Column(name = "message", columnDefinition = "text")
     private String message;
 
     @ManyToOne(fetch = FetchType.LAZY)

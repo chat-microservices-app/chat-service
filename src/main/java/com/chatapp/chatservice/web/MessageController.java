@@ -4,7 +4,9 @@ import com.chatapp.chatservice.annotation.CreateMessagePerm;
 import com.chatapp.chatservice.config.rest.RestProperties;
 import com.chatapp.chatservice.kafka.ChatMessagingProducer;
 import com.chatapp.chatservice.service.MessageService;
+import com.chatapp.chatservice.web.dto.MessageDTO;
 import com.chatapp.chatservice.web.dto.MessageForm;
+import com.chatapp.chatservice.web.paging.ObjectPagedList;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -25,6 +27,7 @@ import java.util.UUID;
         RestProperties.CHATS.MESSAGE.ROOT
 )
 @RestController
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequiredArgsConstructor
 public class MessageController {
 
@@ -32,16 +35,16 @@ public class MessageController {
     private final MessageService messageService;
 
     @GetMapping(produces = "application/json")
-    public ResponseEntity<?> getMessagesForRoom(@PathVariable UUID roomId,
-                                                @RequestParam(name = "page", defaultValue = "0") int page,
-                                                @RequestParam(name = "size", defaultValue = "10") int size,
-                                                @RequestParam(name = "sort", defaultValue = "createdAt") String sort) {
+    public ResponseEntity<ObjectPagedList<MessageDTO>> getMessagesForRoom(@PathVariable UUID roomId,
+                                                                          @RequestParam(name = "page", defaultValue = "0") int page,
+                                                                          @RequestParam(name = "size", defaultValue = "10") int size,
+                                                                          @RequestParam(name = "sort", defaultValue = "createdAt") String sort) {
         return ResponseEntity.ok(
                 messageService
                         .getMessagesByRoomId(roomId,
                                 PageRequest.of(page, size,
                                         Sort.by(sort)
-                                                .ascending())
+                                                .descending())
                         )
         );
 
@@ -73,7 +76,7 @@ public class MessageController {
     }
 
     @PutMapping(path = "{messageId}", produces = "application/json", consumes = "application/json")
-    public ResponseEntity<?> updateMessage(@PathVariable UUID roomId, @PathVariable UUID messageId, Object messageForm) {
+    public ResponseEntity<?> updateMessage(@PathVariable UUID roomId, @PathVariable UUID messageId, MessageForm messageForm) {
         return ResponseEntity.ok().build();
     }
 }

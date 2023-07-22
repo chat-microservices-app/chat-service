@@ -14,6 +14,12 @@ public interface RoomService {
 
     ObjectPagedList<RoomDTO> getRoomList(PageRequest page);
 
+
+    ObjectPagedList<RoomDTO> getRoomsJoinedByUser(UUID userId, PageRequest page);
+
+
+    ObjectPagedList<RoomDTO> getRoomsNotJoinedByUser(UUID userId, PageRequest page);
+
     Room getRoomInformation(UUID roomId);
 
     UUID createRoom(RoomForm roomForm);

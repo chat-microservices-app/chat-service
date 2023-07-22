@@ -12,7 +12,9 @@ public final class RestProperties {
         public static class ROOM {
             public static final String ROOT = "/rooms";
 
-            public static final String JOIN_REQUEST = "/join";
+            public static final String PUBLIC = "/public";
+
+            public static final String JOIN = "/join";
         }
 
         public static class MESSAGE {

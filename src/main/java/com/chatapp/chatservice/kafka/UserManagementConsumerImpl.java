@@ -19,7 +19,7 @@ public class UserManagementConsumerImpl implements UserManagementConsumer {
             groupId = "${spring.kafka.consumer.group-id}")
     @Override
     public void consume(UserDTO userDTO) {
-        log.info("Consumed message: {}", userDTO);
+        log.debug("Consumed message: {}", userDTO);
         userService.updateUser(userDTO);
     }
 }

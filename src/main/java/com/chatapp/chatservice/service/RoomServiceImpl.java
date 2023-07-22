@@ -3,7 +3,7 @@ package com.chatapp.chatservice.service;
 import com.chatapp.chatservice.domain.Member;
 import com.chatapp.chatservice.domain.Room;
 import com.chatapp.chatservice.domain.User;
-import com.chatapp.chatservice.enums.Role;
+import com.chatapp.chatservice.enums.DefaultRole;
 import com.chatapp.chatservice.repository.MemberRepository;
 import com.chatapp.chatservice.repository.RoomRepository;
 import com.chatapp.chatservice.repository.UserRepository;
@@ -63,8 +63,8 @@ public class RoomServiceImpl implements RoomService {
         User admin = userRepository.findById(roomForm.creatorId()).orElseThrow(() -> new NoSuchElementException("User not found"));
 
         // setting up admin role for the creator
-        Pair<String, List<String>> role = RoleHandler.getRoleAndPermission(Role.ADMIN);
-        log.info("Role: {}", role);
+        Pair<String, List<String>> role = RoleHandler.getRoleAndPermission(DefaultRole.ADMIN);
+        log.debug("Role: {}", role);
         com.chatapp.chatservice.domain.Role adminRole = roleService.updateRole(role.a, role.b);
         Member adminMember = memberRepository.saveAndFlush(
                 Member
@@ -82,7 +82,7 @@ public class RoomServiceImpl implements RoomService {
     public UUID deleteRoom(UUID roomId, UUID memberId) {
         Room room = roomRepository.findById(roomId).orElseThrow(() -> new NoSuchElementException("Room not found"));
 
-        if (memberRepository.existsByRolesInAndRoom_RoomId(Set.of(Role.ADMIN.getLabel()), roomId)) {
+        if (memberRepository.existsByRoles_RoleNameInAndRoom_RoomId(Set.of(DefaultRole.ADMIN.getLabel()), roomId)) {
             roomRepository.delete(room);
             return roomId;
         }
@@ -92,7 +92,7 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public UUID updateRoom(UUID roomId, RoomUpdateForm roomForm) {
         Room room = roomRepository.findById(roomId).orElseThrow(() -> new NoSuchElementException("Room not found"));
-        if (memberRepository.existsByRolesInAndRoom_RoomId(Set.of(Role.ADMIN.getLabel()), roomId)) {
+        if (memberRepository.existsByRoles_RoleNameInAndRoom_RoomId(Set.of(DefaultRole.ADMIN.getLabel()), roomId)) {
             roomMapper.updateRoom(roomForm, room);
         }
         throw new NoSuchElementException("Possible admin not found");
@@ -109,9 +109,24 @@ public class RoomServiceImpl implements RoomService {
     public UUID handleJoinRoom(UUID roomId, UUID userId) {
         Room room = roomRepository.findById(roomId).orElseThrow(() -> new NoSuchElementException("Room not found"));
         User user = userRepository.findById(userId).orElseThrow(() -> new NoSuchElementException("User not found"));
-
-        Member member = Member.builder().member(user).memberName(user.getUsername()).room(room).build();
+        Member member = Member.builder()
+                .member(user)
+                .memberName(user.getUsername())
+                .room(room)
+                .build();
         room.addMember(member);
         return roomRepository.save(room).getRoomId();
+    }
+
+    @Override
+    public ObjectPagedList<RoomDTO> getRoomsJoinedByUser(UUID userId, PageRequest page) {
+        Page<RoomDTO> rooms = roomRepository.findAllByMembers_Member_userId(page, RoomDTO.class, userId);
+        return new ObjectPagedList<>(rooms.getContent(), rooms.getPageable(), rooms.getTotalElements());
+    }
+
+    @Override
+    public ObjectPagedList<RoomDTO> getRoomsNotJoinedByUser(UUID userId, PageRequest page) {
+        Page<RoomDTO> rooms = roomRepository.findAllByMembers_Member_userIdNot(page, RoomDTO.class, userId);
+        return new ObjectPagedList<>(rooms.getContent(), rooms.getPageable(), rooms.getTotalElements());
     }
 }

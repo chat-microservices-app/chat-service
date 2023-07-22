@@ -17,7 +17,7 @@ public record RoomForm(
         // TODO: create ms to handle image uploading to an s3 bucket
         // @NotNull @NotBlank
         //@Pattern(regexp = "data:image\\/([a-zA-Z]*);base64,([^\"]*)")
-        String stringBase64Image
+        String pictureUrl
 
 ) {
 }

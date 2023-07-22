@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS user_read_only (
     first_name VARCHAR(255) NOT NULL,
     last_name VARCHAR(255) NOT NULL,
     picture_url VARCHAR(255) NOT NULL,
-    role VARCHAR(255) NOT NULL
+    defaultRole VARCHAR(255) NOT NULL
 );
 
 -- store the rooms created by the users

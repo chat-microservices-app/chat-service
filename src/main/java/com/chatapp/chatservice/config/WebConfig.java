@@ -24,7 +24,8 @@ public class WebConfig implements WebMvcConfigurer {
                         "TRACE",
                         "CONNECT"
 
-                );
+                )
+                .allowedOriginPatterns("*");
     }
 
 }

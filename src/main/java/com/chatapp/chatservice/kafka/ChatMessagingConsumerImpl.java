@@ -25,8 +25,9 @@ public class ChatMessagingConsumerImpl implements ChatMessagingConsumer {
     public void consume(MessageForm message) {
         // returns the saved message in db
         simpMessagingTemplate.convertAndSend("/channel" +
-                RestProperties.CHATS.ROOM.ROOT +
-                "/" + message.roomId() +
-                RestProperties.CHATS.MESSAGE.ROOT,  messageService.saveMessage(message));
+                        RestProperties.CHATS.ROOM.ROOT +
+                        "/" + message.roomId() +
+                        RestProperties.CHATS.MESSAGE.ROOT,
+                messageService.saveMessage(message));
     }
 }

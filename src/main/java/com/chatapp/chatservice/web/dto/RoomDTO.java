@@ -5,7 +5,6 @@ import java.util.UUID;
 public record RoomDTO(
         UUID roomId,
         String name,
-
         String pictureUrl
 
 ) {
