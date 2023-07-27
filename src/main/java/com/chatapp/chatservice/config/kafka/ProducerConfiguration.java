@@ -16,9 +16,27 @@ public class ProducerConfiguration {
     @Value("${spring.kafka.topic.chat-messaging}")
     private String chatMessageTopic;
 
+    @Value("${spring.kafka.topic.chat-messaging-delete}")
+    private String chatMessageDeleteTopic;
+
+    @Value("${spring.kafka.topic.chat-messaging-update}")
+    private String chatMessageUpdateTopic;
+
     @Bean
-    public NewTopic topic() {
+    public NewTopic sendMessageTopic() {
         return TopicBuilder.name(chatMessageTopic)
+                .build();
+    }
+
+    @Bean
+    public NewTopic deleteMessageTopic() {
+        return TopicBuilder.name(chatMessageDeleteTopic)
+                .build();
+    }
+
+    @Bean
+    public NewTopic updateMessageTopic() {
+        return TopicBuilder.name(chatMessageUpdateTopic)
                 .build();
     }
 }

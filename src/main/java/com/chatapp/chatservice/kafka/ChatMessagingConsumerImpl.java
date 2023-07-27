@@ -30,4 +30,32 @@ public class ChatMessagingConsumerImpl implements ChatMessagingConsumer {
                         RestProperties.CHATS.MESSAGE.ROOT,
                 messageService.saveMessage(message));
     }
+
+
+    @KafkaListener(
+            topics = "${spring.kafka.topic.chat-messaging-update}",
+            groupId = "${spring.kafka.consumer.group-id}"
+    )
+    @Override
+    public void consumeUpdateMessage(MessageForm message) {
+        simpMessagingTemplate
+                .convertAndSend("/channel" + RestProperties.CHATS.ROOM.ROOT +
+                                "/" + message.roomId() +
+                                RestProperties.CHATS.MESSAGE.ROOT + "/update",
+                        messageService.updateMessage(message));
+    }
+
+
+    @KafkaListener(
+            topics = "${spring.kafka.topic.chat-messaging-delete}",
+            groupId = "${spring.kafka.consumer.group-id}"
+    )
+    @Override
+    public void consumeDeleteMessage(MessageForm message) {
+        simpMessagingTemplate
+                .convertAndSend("/channel" + RestProperties.CHATS.ROOM.ROOT +
+                                "/" + message.roomId() +
+                                RestProperties.CHATS.MESSAGE.ROOT + "/delete",
+                        messageService.deleteMessage(message.messageId(), message.userId()));
+    }
 }

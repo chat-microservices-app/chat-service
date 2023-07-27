@@ -8,6 +8,7 @@ import com.chatapp.chatservice.web.dto.MessageDTO;
 import com.chatapp.chatservice.web.dto.MessageForm;
 import com.chatapp.chatservice.web.paging.ObjectPagedList;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +30,7 @@ import java.util.UUID;
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequiredArgsConstructor
+@Log4j2
 public class MessageController {
 
     private final ChatMessagingProducer chatMessagingProducer;
@@ -64,19 +66,36 @@ public class MessageController {
         return messageForm;
     }
 
+    @MessageMapping("/update/{roomId}")
+    @SendTo("/channel" + RestProperties.CHATS.ROOM.ROOT +
+            "/{roomId}" + RestProperties.CHATS.MESSAGE.ROOT + "/update")
+    public MessageForm broadcastUpdateMessage(@DestinationVariable UUID roomId, @Validated @Payload MessageForm messageForm) {
+        return messageForm;
+    }
+
+    @MessageMapping("/delete/{roomId}")
+    @SendTo("/channel" + RestProperties.CHATS.ROOM.ROOT +
+            "/{roomId}" + RestProperties.CHATS.MESSAGE.ROOT + "/delete")
+    public MessageForm broadcastDeleteMessage(@DestinationVariable UUID roomId, @Validated @Payload MessageForm messageForm) {
+        return messageForm;
+    }
+
     @CreateMessagePerm
     @PostMapping(produces = "application/json", consumes = "application/json")
     public void createMessage(@PathVariable UUID roomId, @Validated @RequestBody MessageForm messageForm) {
         chatMessagingProducer.sendMessage(messageForm);
     }
 
-    @DeleteMapping(path = "{messageId}", produces = "application/json")
-    public ResponseEntity<?> deleteMessage(@PathVariable UUID roomId, @PathVariable UUID messageId) {
-        return ResponseEntity.ok().build();
+    @DeleteMapping(path = "/{messageId}", produces = "application/json")
+    public void deleteMessage(@PathVariable UUID roomId, @PathVariable UUID messageId, @RequestParam(value = "userId") UUID userId) {
+        log.info("messageId: " + messageId + " userId: " + userId + " roomId: " + roomId);
+        MessageForm messageForm = new MessageForm(messageId, "temp", userId, roomId, null, null);
+        chatMessagingProducer.deleteMessage(messageForm);
     }
 
     @PutMapping(path = "{messageId}", produces = "application/json", consumes = "application/json")
-    public ResponseEntity<?> updateMessage(@PathVariable UUID roomId, @PathVariable UUID messageId, MessageForm messageForm) {
-        return ResponseEntity.ok().build();
+    public void updateMessage(@PathVariable UUID roomId, @PathVariable UUID messageId, MessageForm messageForm) {
+        chatMessagingProducer.updateMessage(messageForm);
+
     }
 }

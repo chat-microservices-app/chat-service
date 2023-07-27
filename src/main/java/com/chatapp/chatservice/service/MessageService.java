@@ -11,6 +11,10 @@ public interface MessageService {
 
     MessageDTO saveMessage(MessageForm messageForm);
 
+    UUID deleteMessage(UUID messageId, UUID userId);
+
+    MessageDTO updateMessage(MessageForm messageForm);
+
     ObjectPagedList<MessageDTO> getMessagesByRoomId(UUID roomId, PageRequest pageRequest);
 
 

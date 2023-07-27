@@ -8,6 +8,7 @@ import lombok.extern.log4j.Log4j2;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
+import org.mapstruct.MappingTarget;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -27,6 +28,12 @@ public interface MessageMapper {
     @Mapping(target ="createdAt", expression = "java(toOffsetDateTime(message.getCreatedAt()))")
     @Mapping(target ="updatedAt", expression = "java(toOffsetDateTime(message.getUpdatedAt()))")
     MessageForm toMessageForm(Message message);
+
+
+    @Mapping(target ="messageId", ignore = true)
+    @Mapping(target ="createdAt", ignore = true)
+    @Mapping(target ="updatedAt", ignore = true)
+    void updateMessageFromMessageForm(MessageForm messageForm, @MappingTarget Message message);
 
 
     @Mapping(target = "messageData", expression = "java(toMessageForm(message))")
