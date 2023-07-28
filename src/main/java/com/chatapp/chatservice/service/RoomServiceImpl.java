@@ -21,10 +21,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 
 @Transactional
@@ -109,6 +106,9 @@ public class RoomServiceImpl implements RoomService {
     public UUID handleJoinRoom(UUID roomId, UUID userId) {
         Room room = roomRepository.findById(roomId).orElseThrow(() -> new NoSuchElementException("Room not found"));
         User user = userRepository.findById(userId).orElseThrow(() -> new NoSuchElementException("User not found"));
+        if(room.getMembers().stream().map(Member::getMember).anyMatch(u -> Objects.equals(u.getUserId(),userId))) {
+            throw new IllegalArgumentException("User already joined the room");
+        }
         Member member = Member.builder()
                 .member(user)
                 .memberName(user.getUsername())
@@ -126,7 +126,11 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public ObjectPagedList<RoomDTO> getRoomsNotJoinedByUser(UUID userId, PageRequest page) {
-        Page<RoomDTO> rooms = roomRepository.findAllByMembers_Member_userIdNot(page, RoomDTO.class, userId);
-        return new ObjectPagedList<>(rooms.getContent(), rooms.getPageable(), rooms.getTotalElements());
+        Page<Room> rooms = roomRepository.findAllByMembers_Member_userIdNot(page, Room.class, userId);
+        return new ObjectPagedList<>(
+                roomMapper.toRoomDTOs(rooms.getContent()),
+                rooms.getPageable(),
+                rooms.getTotalElements()
+        );
     }
 }

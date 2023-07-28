@@ -94,7 +94,7 @@ public class MessageController {
     }
 
     @PutMapping(path = "{messageId}", produces = "application/json", consumes = "application/json")
-    public void updateMessage(@PathVariable UUID roomId, @PathVariable UUID messageId, MessageForm messageForm) {
+    public void updateMessage(@PathVariable UUID roomId, @PathVariable UUID messageId, @RequestBody @Validated MessageForm messageForm) {
         chatMessagingProducer.updateMessage(messageForm);
 
     }

@@ -2,6 +2,8 @@ package com.chatapp.chatservice.web.dto;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.annotation.Nonnull;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -14,13 +16,13 @@ public record MessageForm(
 
         UUID messageId,
 
-        @NotNull
+        @NotEmpty(message = "message must not be null")
         String message,
 
-        @NotNull @Value("#{target.createdBy.userId}")
+        @Value("#{target.createdBy.userId}") @NotNull(message = "userId must not be null")
         UUID userId,
 
-        @NotNull @Value("#{target.room.roomId}")
+        @Value("#{target.room.roomId}") @NotNull(message = "roomId must not be null")
         UUID roomId,
 
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
