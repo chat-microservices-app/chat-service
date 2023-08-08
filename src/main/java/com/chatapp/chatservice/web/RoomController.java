@@ -1,6 +1,6 @@
 package com.chatapp.chatservice.web;
 
-import com.chatapp.chatservice.config.rest.RestProperties;
+import com.chatapp.chatservice.config.api.rest.RestProperties;
 import com.chatapp.chatservice.domain.Room;
 import com.chatapp.chatservice.service.RoomService;
 import com.chatapp.chatservice.web.dto.RoomDTO;

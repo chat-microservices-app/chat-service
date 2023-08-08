@@ -1,15 +1,17 @@
 package com.chatapp.chatservice.kafka;
 
 
-import com.chatapp.chatservice.config.rest.RestProperties;
+import com.chatapp.chatservice.config.api.websocket.WebSocketProperties;
 import com.chatapp.chatservice.service.MessageService;
 import com.chatapp.chatservice.web.dto.MessageForm;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
+@Log4j2
 @Service
 public class ChatMessagingConsumerImpl implements ChatMessagingConsumer {
 
@@ -24,10 +26,9 @@ public class ChatMessagingConsumerImpl implements ChatMessagingConsumer {
     @Override
     public void consume(MessageForm message) {
         // returns the saved message in db
-        simpMessagingTemplate.convertAndSend("/channel" +
-                        RestProperties.CHATS.ROOM.ROOT +
-                        "/" + message.roomId() +
-                        RestProperties.CHATS.MESSAGE.ROOT,
+        simpMessagingTemplate.convertAndSend(WebSocketProperties.ROOT_CHANNEL + WebSocketProperties.Rooms.ROOT +
+                        "." + message.roomId() + "." + WebSocketProperties.Rooms.Messages.ROOT +
+                        WebSocketProperties.Rooms.Messages.SEND,
                 messageService.saveMessage(message));
     }
 
@@ -38,10 +39,11 @@ public class ChatMessagingConsumerImpl implements ChatMessagingConsumer {
     )
     @Override
     public void consumeUpdateMessage(MessageForm message) {
+
         simpMessagingTemplate
-                .convertAndSend("/channel" + RestProperties.CHATS.ROOM.ROOT +
-                                "/" + message.roomId() +
-                                RestProperties.CHATS.MESSAGE.ROOT + "/update",
+                .convertAndSend(WebSocketProperties.ROOT_CHANNEL + WebSocketProperties.Rooms.ROOT +
+                                "." + message.roomId() + "." + WebSocketProperties.Rooms.Messages.ROOT +
+                                WebSocketProperties.Rooms.Messages.UPDATE,
                         messageService.updateMessage(message));
     }
 
@@ -53,9 +55,9 @@ public class ChatMessagingConsumerImpl implements ChatMessagingConsumer {
     @Override
     public void consumeDeleteMessage(MessageForm message) {
         simpMessagingTemplate
-                .convertAndSend("/channel" + RestProperties.CHATS.ROOM.ROOT +
-                                "/" + message.roomId() +
-                                RestProperties.CHATS.MESSAGE.ROOT + "/delete",
+                .convertAndSend(WebSocketProperties.ROOT_CHANNEL + WebSocketProperties.Rooms.ROOT +
+                                "." + message.roomId() + "." + WebSocketProperties.Rooms.Messages.ROOT +
+                                WebSocketProperties.Rooms.Messages.DELETE,
                         messageService.deleteMessage(message.messageId(), message.userId()));
     }
 }

@@ -1,7 +1,7 @@
 package com.chatapp.chatservice.config.security.filter;
 
 
-import com.chatapp.chatservice.config.rest.RestProperties;
+import com.chatapp.chatservice.config.api.rest.RestProperties;
 import com.chatapp.chatservice.config.security.SecurityManager;
 import jakarta.annotation.Nonnull;
 import jakarta.servlet.FilterChain;

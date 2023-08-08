@@ -1,4 +1,4 @@
-package com.chatapp.chatservice.config.rest;
+package com.chatapp.chatservice.config.api.rest;
 
 
 public final class RestProperties {

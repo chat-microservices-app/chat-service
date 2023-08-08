@@ -1,6 +1,6 @@
 package com.chatapp.chatservice.config.security;
 
-import com.chatapp.chatservice.config.rest.RestProperties;
+import com.chatapp.chatservice.config.api.rest.RestProperties;
 import com.chatapp.chatservice.config.security.filter.SecurityFilter;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

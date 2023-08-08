@@ -1,6 +1,6 @@
 package com.chatapp.chattingservice;
 
-import com.chatapp.chatservice.config.rest.RestProperties;
+import com.chatapp.chatservice.config.api.rest.RestProperties;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 

@@ -1,7 +1,7 @@
 package com.chatapp.chatservice.config.security.client;
 
 
-import com.chatapp.chatservice.config.rest.RestProperties;
+import com.chatapp.chatservice.config.api.rest.RestProperties;
 import com.chatapp.chatservice.web.dto.UserDetailsTransfer;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;

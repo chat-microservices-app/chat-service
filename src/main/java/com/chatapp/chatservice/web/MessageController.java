@@ -1,7 +1,9 @@
 package com.chatapp.chatservice.web;
 
 import com.chatapp.chatservice.annotation.CreateMessagePerm;
-import com.chatapp.chatservice.config.rest.RestProperties;
+import com.chatapp.chatservice.config.api.websocket.WebSocketProperties;
+import com.chatapp.chatservice.config.redis.domain.ActiveWebSocketUser;
+import com.chatapp.chatservice.config.api.rest.RestProperties;
 import com.chatapp.chatservice.kafka.ChatMessagingProducer;
 import com.chatapp.chatservice.service.MessageService;
 import com.chatapp.chatservice.web.dto.MessageDTO;
@@ -11,15 +13,20 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 
 @RequestMapping(RestProperties.ROOT + "/v1" +
@@ -35,7 +42,7 @@ public class MessageController {
 
     private final ChatMessagingProducer chatMessagingProducer;
     private final MessageService messageService;
-
+    private final RedisTemplate<String, ActiveWebSocketUser> redisTemplate;
     @GetMapping(produces = "application/json")
     public ResponseEntity<ObjectPagedList<MessageDTO>> getMessagesForRoom(@PathVariable UUID roomId,
                                                                           @RequestParam(name = "page", defaultValue = "0") int page,
@@ -60,22 +67,25 @@ public class MessageController {
 
 
     @MessageMapping("/send/{roomId}")
-    @SendTo("/channel" + RestProperties.CHATS.ROOM.ROOT +
-            "/{roomId}" + RestProperties.CHATS.MESSAGE.ROOT)
+    @SendTo(WebSocketProperties.ROOT_CHANNEL + WebSocketProperties.Rooms.ROOT +
+            ".{roomId}." + WebSocketProperties.Rooms.Messages.ROOT +
+            WebSocketProperties.Rooms.Messages.SEND)
     public MessageForm broadcastMessage(@DestinationVariable UUID roomId, @Validated @Payload MessageForm messageForm) {
         return messageForm;
     }
 
     @MessageMapping("/update/{roomId}")
-    @SendTo("/channel" + RestProperties.CHATS.ROOM.ROOT +
-            "/{roomId}" + RestProperties.CHATS.MESSAGE.ROOT + "/update")
+    @SendTo(WebSocketProperties.ROOT_CHANNEL + WebSocketProperties.Rooms.ROOT +
+            ".{roomId}." + WebSocketProperties.Rooms.Messages.ROOT +
+            WebSocketProperties.Rooms.Messages.UPDATE)
     public MessageForm broadcastUpdateMessage(@DestinationVariable UUID roomId, @Validated @Payload MessageForm messageForm) {
         return messageForm;
     }
 
     @MessageMapping("/delete/{roomId}")
-    @SendTo("/channel" + RestProperties.CHATS.ROOM.ROOT +
-            "/{roomId}" + RestProperties.CHATS.MESSAGE.ROOT + "/delete")
+    @SendTo(WebSocketProperties.ROOT_CHANNEL + WebSocketProperties.Rooms.ROOT +
+            ".{roomId}." + WebSocketProperties.Rooms.Messages.ROOT +
+            WebSocketProperties.Rooms.Messages.DELETE)
     public MessageForm broadcastDeleteMessage(@DestinationVariable UUID roomId, @Validated @Payload MessageForm messageForm) {
         return messageForm;
     }
@@ -98,4 +108,14 @@ public class MessageController {
         chatMessagingProducer.updateMessage(messageForm);
 
     }
+
+//    @SubscribeMapping("/users/{roomId}")
+//    public List<String> subscribeUsers(@DestinationVariable UUID roomId) {
+//        return Objects.requireNonNull(redisTemplate.keys("*"))
+//                .stream()
+//                .map(key -> redisTemplate.opsForValue().get(key))
+//                .filter(Objects::nonNull)
+//                .map(ActiveWebSocketUser::getUsername)
+//                .collect(Collectors.toList());
+//    }
 }
