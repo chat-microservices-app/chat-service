@@ -1,7 +1,6 @@
 package com.chatapp.chatservice.kafka;
 
 import com.chatapp.chatservice.web.dto.MessageForm;
-import org.antlr.v4.runtime.misc.Pair;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.kafka.core.KafkaTemplate;

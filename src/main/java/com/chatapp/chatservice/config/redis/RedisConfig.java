@@ -10,13 +10,19 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
 public class RedisConfig {
+
+    @Bean
+    public GenericJackson2JsonRedisSerializer messageConverter() {
+        return new GenericJackson2JsonRedisSerializer();
+    }
+
     @Bean
     public RedisTemplate<String, ActiveWebSocketUser> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
         RedisTemplate<String, ActiveWebSocketUser> template = new RedisTemplate<>();
         template.setConnectionFactory(redisConnectionFactory);
 
         // Use Jackson2JsonRedisSerializer to serialize/deserialize ActiveWebSocketUser objects to/from JSON
-        GenericJackson2JsonRedisSerializer serializer = new GenericJackson2JsonRedisSerializer();
+        GenericJackson2JsonRedisSerializer serializer = messageConverter();
 
         template.setDefaultSerializer(serializer);
         template.setKeySerializer(new StringRedisSerializer());
@@ -26,4 +32,6 @@ public class RedisConfig {
         template.afterPropertiesSet();
         return template;
     }
+
+
 }

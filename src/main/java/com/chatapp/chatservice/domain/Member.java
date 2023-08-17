@@ -3,6 +3,7 @@ package com.chatapp.chatservice.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.proxy.HibernateProxy;
@@ -32,7 +33,7 @@ public class Member {
     @Column(name = "member_name", columnDefinition = "varchar")
     private String memberName;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @ToString.Exclude
     private User member;
 

@@ -5,7 +5,6 @@ import com.chatapp.chatservice.config.redis.domain.ActiveWebSocketUser;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.context.ApplicationListener;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 
