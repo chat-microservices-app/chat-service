@@ -23,7 +23,7 @@
 
 	<groupId>com.chatapp</groupId>
 	<artifactId>chatservice</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2-K8S-SNAPSHOT</version>
 	<name>chat-service</name>
 	<description>chatting-service</description>
 	<properties>
@@ -74,14 +74,16 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-websocket</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-config</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
-		</dependency>
+		<!-- to enable config server and eureka discovery; migrating to k8s -->
+		<!--        <dependency>-->
+		<!--            <groupId>org.springframework.cloud</groupId>-->
+		<!--            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>-->
+		<!--        </dependency>-->
+		<!--        <dependency>-->
+		<!--            <groupId>org.springframework.cloud</groupId>-->
+		<!--            <artifactId>spring-cloud-starter-config</artifactId>-->
+		<!--        </dependency>-->
+		<!-- to enable config server and eureka discovery; migrating to k8s -->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-openfeign</artifactId>
@@ -133,6 +135,12 @@
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>2.6</version>
+			<scope>compile</scope>
 		</dependency>
 	</dependencies>
 	<dependencyManagement>
