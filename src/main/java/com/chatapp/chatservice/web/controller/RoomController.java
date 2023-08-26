@@ -1,4 +1,4 @@
-package com.chatapp.chatservice.web;
+package com.chatapp.chatservice.web.controller;
 
 import com.chatapp.chatservice.config.api.rest.RestProperties;
 import com.chatapp.chatservice.domain.Room;
@@ -30,6 +30,7 @@ public class RoomController {
                                                                 @RequestParam(name = "size", defaultValue = "10") int size) {
         return ResponseEntity.ok(roomService.getRoomList(PageRequest.of(page, size)));
     }
+
     @GetMapping(path = RestProperties.CHATS.ROOM.JOIN + "/{userId}", produces = "application/json")
     public ResponseEntity<ObjectPagedList<RoomDTO>> getRoomsJoined(@RequestParam(name = "page", defaultValue = "0") int page,
                                                                    @RequestParam(name = "size", defaultValue = "10") int size,
@@ -37,7 +38,7 @@ public class RoomController {
         return ResponseEntity.ok(roomService.getRoomsJoinedByUser(userId, PageRequest.of(page, size)));
     }
 
-    @GetMapping(path = RestProperties.CHATS.ROOM.PUBLIC  + "/{userId}", produces = "application/json")
+    @GetMapping(path = RestProperties.CHATS.ROOM.PUBLIC + "/{userId}", produces = "application/json")
     public ResponseEntity<ObjectPagedList<RoomDTO>> getRoomsToJoin(@RequestParam(name = "page", defaultValue = "0") int page,
                                                                    @RequestParam(name = "size", defaultValue = "10") int size,
                                                                    @PathVariable UUID userId) {

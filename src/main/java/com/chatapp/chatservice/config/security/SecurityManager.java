@@ -34,11 +34,10 @@ public class SecurityManager {
         try {
             return Optional.of(securityServerClient.checkToken(authToken));
         } catch (Exception exception) {
-            log.error("Error while getting user details from security service", exception);
+            log.error("Error while getting user details from security service {}", exception.getMessage());
             return Optional.empty();
         }
     }
-
 
 
     private UsernamePasswordAuthenticationToken getAuthentication(UserDetailsTransfer userDetailsTransfer) {

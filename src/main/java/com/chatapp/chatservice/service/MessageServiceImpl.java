@@ -46,8 +46,12 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public UUID deleteMessage(UUID messageId, UUID userId) {
         Optional<Message> optionalMessage = messageRepository.findById(messageId);
-        if (!userRepository.existsById(userId) || optionalMessage.isEmpty()) {
+        if (!userRepository.existsById(userId)) {
             throw new NoSuchElementException("user or message not found");
+        }
+
+        if (optionalMessage.isEmpty()) {
+            throw new NoSuchElementException("message not found");
         }
 
         Message message = optionalMessage.get();
@@ -55,15 +59,21 @@ public class MessageServiceImpl implements MessageService {
             messageRepository.deleteById(messageId);
             return messageId;
         }
-        throw new NoSuchElementException("user not authorized to delete this message");
+
+        // throw error when the user is not authorized
+        throw new SecurityException("user not authorized to delete this message");
 
     }
 
     @Override
     public MessageDTO updateMessage(MessageForm messageForm) {
         Optional<Message> optionalMessage = messageRepository.findById(messageForm.messageId());
-        if (!userRepository.existsById(messageForm.userId()) || optionalMessage.isEmpty()) {
-            throw new NoSuchElementException("user id or message not found");
+        if (!userRepository.existsById(messageForm.userId())) {
+            throw new NoSuchElementException("user not found");
+        }
+
+        if (optionalMessage.isEmpty()) {
+            throw new NoSuchElementException("message not found");
         }
 
         Message message = optionalMessage.get();
@@ -71,7 +81,8 @@ public class MessageServiceImpl implements MessageService {
             messageMapper.updateMessageFromMessageForm(messageForm, message);
             return messageMapper.toMessageDTO(messageRepository.saveAndFlush(message));
         }
-        throw new IllegalArgumentException("user not authorized to update this message");
+
+        throw new SecurityException("user not authorized to update this message");
     }
 
     @Override

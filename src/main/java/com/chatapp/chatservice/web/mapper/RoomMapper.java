@@ -15,7 +15,6 @@ import java.util.List;
         nullValuePropertyMappingStrategy = org.mapstruct.NullValuePropertyMappingStrategy.IGNORE)
 public interface RoomMapper {
 
-
     Room roomFormToRoom(RoomForm room);
 
 

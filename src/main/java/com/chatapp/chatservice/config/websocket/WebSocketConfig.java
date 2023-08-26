@@ -97,7 +97,10 @@ public class WebSocketConfig extends AbstractSessionWebSocketMessageBrokerConfig
 
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {
+
+        // intercepting the websocket connection to authenticate the user
         registration.interceptors(new ChannelInterceptor() {
+
             @Override
             public Message<?> preSend(@Nonnull Message<?> message, @Nonnull MessageChannel channel) {
                 StompHeaderAccessor accessor =
@@ -109,7 +112,7 @@ public class WebSocketConfig extends AbstractSessionWebSocketMessageBrokerConfig
                 // for authorization
                 if (StompCommand.CONNECT.equals(accessor.getCommand())) {
                     List<String> auth = accessor.getNativeHeader(HttpHeaders.AUTHORIZATION);
-                    if (auth != null && auth.size() > 0) {
+                    if (auth != null && !auth.isEmpty()) {
                         // gets the jwt token from the header
                         String tokenData = StringUtils.substringAfter(auth.get(0), RestProperties.TOKEN_PREFIX);
                         Authentication user = securityManager
@@ -119,7 +122,7 @@ public class WebSocketConfig extends AbstractSessionWebSocketMessageBrokerConfig
                         accessor.setLeaveMutable(true);
                         return MessageBuilder.createMessage(message.getPayload(), accessor.getMessageHeaders());
                     }
-                    // TODO add correct http status code
+                    // if missing token, throw an exception
                     throw new OAuthBearerIllegalTokenException(OAuthBearerValidationResult.newFailure("Bearer token is missing"));
                 }
                 return message;

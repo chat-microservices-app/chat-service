@@ -44,7 +44,7 @@ public class WebSecurityConfig {
 
         // setting up stateless authentication for all requests that start with /api/v1/chats/**
         http
-                .securityMatcher(RestProperties.ROOT  + ALLOW_ALL_ENDPOINTS)
+                .securityMatcher(RestProperties.ROOT + ALLOW_ALL_ENDPOINTS)
                 .sessionManagement(
                         sessionManagement -> sessionManagement
                                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
