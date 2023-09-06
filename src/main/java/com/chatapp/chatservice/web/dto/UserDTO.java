@@ -14,6 +14,7 @@ public class UserDTO {
 
     @JsonProperty("userId")
     UUID userId;
+
     @JsonProperty("firstName")
     String firstName;
 

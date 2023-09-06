@@ -1,9 +1,10 @@
 package com.chatapp.chatservice.domain;
 
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -39,13 +40,18 @@ public class User {
     @Column(name = "picture_url")
     private String pictureUrl;
 
+
+    // if we delete a user, we want to delete all the messages that they created
     @OneToMany(mappedBy = "createdBy", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<Message> messages = new HashSet<>();
 
 
+    // if we delete a user, we want to delete all the rooms that they created
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<Member> usersInRooms = new HashSet<>();
 
 

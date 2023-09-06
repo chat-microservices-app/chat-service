@@ -22,4 +22,14 @@ public class UserManagementConsumerImpl implements UserManagementConsumer {
         log.debug("Consumed message: {}", userDTO);
         userService.updateUser(userDTO);
     }
+
+
+    @KafkaListener(topics = "${spring.kafka.topic.user-delete}",
+            groupId = "${spring.kafka.consumer.group-id}")
+    @Override
+    public void consumeDelete(UserDTO message) {
+        log.debug("Consumed message: {}", message);
+        userService.deleteUser(message);
+
+    }
 }

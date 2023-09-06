@@ -27,4 +27,10 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
+    @Override
+    public void deleteUser(UserDTO userToDelete) {
+        if(userRepository.existsById(userToDelete.getUserId()))
+            userRepository.deleteById(userToDelete.getUserId());
+    }
+
 }

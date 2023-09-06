@@ -2,10 +2,10 @@ package com.chatapp.chatservice.domain;
 
 
 import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Table;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.*;
 import org.hibernate.proxy.HibernateProxy;
 
 import java.time.OffsetDateTime;
@@ -42,11 +42,12 @@ public class Room {
     @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
     @Fetch(FetchMode.JOIN)
     @Builder.Default
+    @OnDelete(action = OnDeleteAction.CASCADE) // remove all the members when the room is deleted
     private List<Member> members = new ArrayList<>();
 
     @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
     @Fetch(FetchMode.JOIN)
-    @Builder.Default
+    @Builder.Default @OnDelete(action = OnDeleteAction.CASCADE) // remove all the messages when the room is deleted
     private List<Message> messages = new ArrayList<>();
 
 
